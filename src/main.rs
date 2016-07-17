@@ -109,6 +109,7 @@ impl Table {
         let length = try!(encode(&bytes.len(), bincode::SizeLimit::Infinite));
         try!(writer.write(&length));
         try!(writer.write(&bytes));
+        try!(writer.flush());
         Ok(())
     }
 
