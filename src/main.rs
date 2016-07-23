@@ -28,6 +28,7 @@ pub enum DataType {
     BigInteger,
     Integer,
     DateTime,
+    Boolean,
 }
 
 #[derive(Debug, RustcEncodable, RustcDecodable)]
@@ -36,6 +37,7 @@ pub enum DataValue {
     BigInteger(Option<i64>),
     Integer(Option<i32>),
     DateTime(Option<String>),
+    Boolean(Option<bool>),
 }
 
 #[derive(Debug, RustcEncodable, RustcDecodable)]
@@ -151,6 +153,7 @@ fn main() {
     let mut posts_table = Table::new("posts")
         .column("username", DataType::Text)
         .column("body", DataType::Text)
+        .column("active", DataType::Boolean)
         .init(&mut posts_file)
         .unwrap();
 
@@ -159,6 +162,7 @@ fn main() {
     posts_table.insert(&mut posts_file, Row::new(vec![
         DataValue::Text(Some("user1".to_string())),
         DataValue::Text(Some("This is a blog".to_string())),
+        DataValue::Boolean(Some(false)),
     ]));
 
     for row in posts_table.scan(&mut posts_file) {
