@@ -1,6 +1,6 @@
 use datatypes::DataType;
 
-#[derive(Debug, RustcEncodable, RustcDecodable)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Column {
     pub name: String,
     pub datatype: DataType,

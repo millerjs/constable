@@ -1,6 +1,6 @@
 use datatypes::DataValue;
 
-#[derive(Debug, RustcEncodable, RustcDecodable)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Row {
     pub id: u64,
     pub deleted: bool,

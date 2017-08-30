@@ -7,8 +7,6 @@ quick_error! {
         /// IO Error
         Io(err: IOError) { from() }
         /// Encoding Error
-        Encoding(err: bincode::rustc_serialize::EncodingError) { from() }
-        /// Decoding Error
-        Decoding(err: bincode::rustc_serialize::DecodingError) { from() }
+        Encoding(err: bincode::Error) { from() }
     }
 }
