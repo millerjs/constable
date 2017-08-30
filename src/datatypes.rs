@@ -1,6 +1,6 @@
 //! Core Constable data types
 
-#[derive(Debug, RustcEncodable, RustcDecodable)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum DataType {
     Text,
     BigInteger,
@@ -9,7 +9,7 @@ pub enum DataType {
     Boolean,
 }
 
-#[derive(Debug, RustcEncodable, RustcDecodable)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum DataValue {
     Text(Option<String>),
     BigInteger(Option<i64>),

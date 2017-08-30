@@ -4,7 +4,7 @@ use std::io::prelude::*;
 use std;
 use result::ConstableResult;
 use bincode;
-use bincode::rustc_serialize::{encode, decode_from};
+use bincode::{serialize,deserialize_from};
 use column::Column;
 use row::Row;
 use datatypes::DataType;
@@ -56,8 +56,8 @@ impl Table {
     pub fn insert<W>(&self, writer: &mut W, row: Row) -> ConstableResult<()>
         where W: Write
     {
-        let bytes = try!(encode(&row, bincode::SizeLimit::Infinite));
-        let length = try!(encode(&bytes.len(), bincode::SizeLimit::Infinite));
+        let bytes = try!(serialize(&row, bincode::Infinite));
+        let length = try!(serialize(&bytes.len(), bincode::Infinite));
         try!(writer.write(&length));
         try!(writer.write(&bytes));
         try!(writer.flush());
@@ -67,7 +67,7 @@ impl Table {
     pub fn scan<R>(&self, mut reader: R) -> TableScanner<R>
         where R: Read + Seek
     {
-        reader.seek(io::SeekFrom::Start(0));
+        reader.seek(io::SeekFrom::Start(0)).unwrap();
         TableScanner {
             cursor: 0,
             reader: reader,
@@ -79,11 +79,11 @@ impl<R: Read + Seek> Iterator for TableScanner<R> {
     type Item = ConstableResult<Row>;
 
     fn next(&mut self) -> Option<ConstableResult<Row>> {
-        let length = match decode_from(&mut self.reader, bincode::SizeLimit::Infinite) {
+        let length = match deserialize_from(&mut self.reader, bincode::Infinite) {
             Ok(len) => len,
             Err(_) => return None
         };
-        match decode_from(&mut self.reader, bincode::SizeLimit::Bounded(length)) {
+        match deserialize_from(&mut self.reader, bincode::Bounded(length)) {
             Ok(row) => Some(Ok(row)),
             Err(error) => Some(Err(ConstableError::from(error)))
         }
